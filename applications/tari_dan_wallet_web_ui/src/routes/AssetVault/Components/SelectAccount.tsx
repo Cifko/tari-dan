@@ -35,7 +35,7 @@ import { useAccountsList } from '../../../api/hooks/useAccounts';
 
 function SelectAccount() {
   const { accountName, setAccountName } = useAccountStore();
-  const { data: dataAccountsList } = useAccountsList(0, 10);
+  const { data: dataAccountsList, isFetched } = useAccountsList(0, 10);
   const [dialogOpen, setDialogOpen] = useState(false);
   const theme = useTheme();
 
@@ -58,7 +58,7 @@ function SelectAccount() {
         <Select
           labelId="account-select-label"
           id="account-select"
-          value={accountName}
+          value={isFetched ? accountName : ''}
           label="Account"
           onChange={handleChange}
         >

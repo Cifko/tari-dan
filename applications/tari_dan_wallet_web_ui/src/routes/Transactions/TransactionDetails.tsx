@@ -110,7 +110,6 @@ export default function TransactionDetails() {
     }
 
     const last_update_time = new Date(data.last_update_time);
-    console.log(data);
     const handleDownload = () => {
       const json = JSON.stringify(data, null, 2);
       const blob = new Blob([json], { type: 'application/json' });

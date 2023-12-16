@@ -109,7 +109,7 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -190,6 +190,7 @@ function Assets({ accountName }: { accountName: string }) {
                   }: BalanceRowProps) => {
                     return (
                       <BalanceRow
+                        key={token_symbol || resource_address}
                         token_symbol={token_symbol}
                         resource_address={resource_address}
                         resource_type={resource_type}

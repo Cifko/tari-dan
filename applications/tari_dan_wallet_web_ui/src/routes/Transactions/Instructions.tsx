@@ -83,8 +83,8 @@ export default function Instructions({ data }: any, index: number) {
       <Table>
         <TableBody>
           {data &&
-            data.map((item: any) => {
-              return <RowData title={Object.keys(item)[0]} data={item} />;
+            data.map((item: any, index: number) => {
+              return <RowData key={index} title={Object.keys(item)[0]} data={item} />;
             })}
         </TableBody>
       </Table>
