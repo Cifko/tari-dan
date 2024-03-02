@@ -231,6 +231,7 @@ pub async fn transfer_confidential(
         inputs: vec![source_account_addr, dest_account_addr],
         min_epoch,
         max_epoch,
+        inputs_refs: vec![],
     };
 
     let submit_resp = client.submit_transaction(submit_req).await.unwrap();
@@ -458,6 +459,7 @@ pub async fn submit_manifest_with_signing_keys(
         inputs,
         min_epoch,
         max_epoch,
+        inputs_refs: vec![],
     };
 
     let resp = client.submit_transaction(transaction_submit_req).await.unwrap();
@@ -530,6 +532,7 @@ pub async fn submit_manifest(
         inputs,
         min_epoch,
         max_epoch,
+        inputs_refs: vec![],
     };
 
     let mut client = get_auth_wallet_daemon_client(world, &wallet_daemon_name).await;
@@ -577,6 +580,7 @@ pub async fn submit_transaction(
         proof_ids: vec![],
         min_epoch,
         max_epoch,
+        inputs_refs: vec![],
     };
 
     let resp = client.submit_transaction(transaction_submit_req).await.unwrap();
@@ -628,6 +632,7 @@ pub async fn create_component(
         inputs: vec![],
         min_epoch,
         max_epoch,
+        inputs_refs: vec![],
     };
 
     let resp = client.submit_transaction(transaction_submit_req).await.unwrap();

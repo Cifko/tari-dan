@@ -2173,6 +2173,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "dan_testing"
+version = "0.3.0"
+dependencies = [
+ "anyhow",
+ "borsh",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tari_common_types",
+ "tari_dan_wallet_sdk",
+ "tari_engine_types",
+ "tari_template_builtin",
+ "tari_template_lib",
+ "tari_transaction",
+ "tari_utilities",
+ "tari_validator_node_client",
+ "tari_wallet_daemon_client",
+ "tokio",
+]
+
+[[package]]
 name = "darling"
 version = "0.14.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"

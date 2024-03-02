@@ -272,6 +272,7 @@ pub async fn handle_submit(args: SubmitArgs, client: &mut WalletDaemonClient) ->
         proof_ids: vec![],
         min_epoch: common.min_epoch.map(Epoch),
         max_epoch: common.max_epoch.map(Epoch),
+        inputs_refs: Default::default(),
     };
     submit_transaction(request, client).await?;
     Ok(())
@@ -310,6 +311,7 @@ async fn handle_submit_manifest(
         proof_ids: vec![],
         min_epoch: common.min_epoch.map(Epoch),
         max_epoch: common.max_epoch.map(Epoch),
+        inputs_refs: Default::default(),
     };
 
     submit_transaction(request, client).await?;

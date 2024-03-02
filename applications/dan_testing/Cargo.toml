@@ -1,0 +1,27 @@
+[package]
+name = "dan_testing"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+license.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tari_common_types = { workspace = true }
+tari_engine_types.workspace = true
+tari_template_builtin.workspace = true
+tari_template_lib.workspace = true
+tari_utilities.workspace = true
+tari_validator_node_client.workspace = true
+tari_wallet_daemon_client.workspace = true
+tari_dan_wallet_sdk.workspace = true
+tari_transaction.workspace = true
+
+anyhow.workspace = true
+borsh.workspace = true
+reqwest.workspace = true
+serde_json.workspace = true
+serde.workspace = true
+tokio = { workspace = true, features = ["full"] }

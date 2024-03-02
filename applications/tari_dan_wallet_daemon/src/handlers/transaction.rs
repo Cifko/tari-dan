@@ -43,6 +43,7 @@ pub async fn handle_submit_instruction(
     token: Option<String>,
     req: CallInstructionRequest,
 ) -> Result<TransactionSubmitResponse, anyhow::Error> {
+    dbg!("CIFKO");
     let mut instructions = req.instructions;
     if let Some(dump_account) = req.dump_outputs_into {
         instructions.push(Instruction::PutLastInstructionOutputOnWorkspace {
@@ -66,6 +67,7 @@ pub async fn handle_submit_instruction(
         name_or_address: req.fee_account,
     })
     .await?;
+    dbg!("CIFKO");
     let request = TransactionSubmitRequest {
         signing_key_index: Some(fee_account.key_index),
         fee_instructions: vec![Instruction::CallMethod {
@@ -80,7 +82,9 @@ pub async fn handle_submit_instruction(
         proof_ids: vec![],
         min_epoch: req.min_epoch.map(Epoch),
         max_epoch: req.max_epoch.map(Epoch),
+        inputs_refs: req.inputs_refs,
     };
+    dbg!("CIFKO");
     handle_submit(context, token, request).await
 }
 
@@ -97,6 +101,7 @@ pub async fn handle_submit(
     // Fetch the key to sign the transaction
     // TODO: Ideally the SDK should take care of signing the transaction internally
     let (_, key) = key_api.get_key_or_active(key_manager::TRANSACTION_BRANCH, req.signing_key_index)?;
+    dbg!("CIFKO");
 
     let inputs = if req.override_inputs {
         req.inputs
@@ -115,25 +120,31 @@ pub async fn handle_submit(
         [req.inputs, loaded_dependent_substates].concat()
     };
 
+    dbg!("CIFKO");
+
     let transaction = Transaction::builder()
         .with_instructions(req.instructions)
         .with_fee_instructions(req.fee_instructions)
         .with_min_epoch(req.min_epoch)
         .with_max_epoch(req.max_epoch)
+        .with_input_refs(req.inputs_refs)
         .sign(&key.key)
         .build();
+    dbg!("CIFKO");
 
     for proof_id in req.proof_ids {
         // update the proofs table with the corresponding transaction hash
         sdk.confidential_outputs_api()
             .proofs_set_transaction_hash(proof_id, *transaction.id())?;
     }
+    dbg!("CIFKO");
 
     info!(
         target: LOG_TARGET,
         "Submitted transaction with hash {}",
         transaction.hash()
     );
+    dbg!("CIFKO");
     if req.is_dry_run {
         let response: TransactionQueryResult = sdk
             .transaction_api()
