@@ -31,12 +31,14 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import { useParams } from "react-router-dom";
 import { useAccountsGetBalances, useAccountsGet, useAccountNFTsList } from "../../api/hooks/useAccounts";
-import { shortenString } from "../../utils/helpers";
+import { renderJson, shortenString } from "../../utils/helpers";
 import { DataTableCell } from "../../Components/StyledComponents";
 import CopyToClipboard from "../../Components/CopyToClipboard";
 import FetchStatusCheck from "../../Components/FetchStatusCheck";
 import { substateIdToString } from "@tarilabs/typescript-bindings";
 import type { AccountNftInfo, BalanceEntry } from "@tarilabs/typescript-bindings/wallet-daemon-client";
+import { IoCheckmarkOutline, IoCloseOutline } from "react-icons/io5";
+import NFTList from "../../Components/NFTList";
 
 function BalanceRow(props: BalanceEntry) {
   return (
@@ -52,11 +54,27 @@ function BalanceRow(props: BalanceEntry) {
   );
 }
 
-function NftsList({ nft }: { nft: AccountNftInfo }) {
+function NftsList({ metadata, is_burned }: AccountNftInfo) {
   return (
     <TableRow>
-      <DataTableCell>{nft.metadata}</DataTableCell>
-      <DataTableCell>{nft.is_burned}</DataTableCell>
+      <DataTableCell>{metadata.name || <i>No name</i>}</DataTableCell>
+      <DataTableCell>
+        {metadata.image_url ? (
+          <a href={metadata.image_url} target="_blank" rel="noopener noreferrer">
+            <img src={metadata.image_url} style={{ maxWidth: "100px", maxHeight: "100px", objectFit: "contain" }} />
+          </a>
+        ) : (
+          <i>No image</i>
+        )}
+      </DataTableCell>
+      <DataTableCell>{renderJson(metadata)}</DataTableCell>
+      <DataTableCell>
+        {is_burned ? (
+          <IoCheckmarkOutline style={{ height: 22, width: 22 }} color="#DB7E7E" />
+        ) : (
+          <IoCloseOutline style={{ height: 22, width: 22 }} color="#5F9C91" />
+        )}
+      </DataTableCell>
     </TableRow>
   );
 }
@@ -71,18 +89,18 @@ function AccountDetailsLayout() {
   } = useAccountsGetBalances(name || "");
 
   const {
-    data: nftsListData,
-    isLoading: nftsListIsLoading,
-    isError: nftsListIsError,
-    error: nftsListError,
-  } = useAccountNFTsList(0, 10);
-
-  const {
     data: accountsData,
     isLoading: accountsIsLoading,
     isError: accountsIsError,
     error: accountsError,
   } = useAccountsGet(name || "");
+
+  const {
+    data: nftsListData,
+    isLoading: nftsListIsFetching,
+    isError: nftsListIsError,
+    error: nftsListError,
+  } = useAccountNFTsList({ Name: accountsData?.account?.name || "" }, 0, 10);
 
   return (
     <>
@@ -150,27 +168,12 @@ function AccountDetailsLayout() {
       <Grid item xs={12} md={12} lg={12}>
         <StyledPaper>
           Account NFTs
-          <FetchStatusCheck
-            isError={nftsListIsError}
-            errorMessage={nftsListError?.message || "Error fetching data"}
-            isLoading={nftsListIsLoading}
+          <NFTList
+            nftsListIsError={nftsListIsError}
+            nftsListIsFetching={nftsListIsFetching}
+            nftsListError={nftsListError}
+            nftsListData={nftsListData}
           />
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Token Symbol</TableCell>
-                  <TableCell>Resource Type</TableCell>
-                  <TableCell>Is Burned</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {nftsListData?.nfts.map((nft: AccountNftInfo, index: number) => (
-                  <NftsList key={index} nft={nft} />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
         </StyledPaper>
       </Grid>
     </>

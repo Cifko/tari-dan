@@ -36,8 +36,10 @@ import FetchStatusCheck from "../../../Components/FetchStatusCheck";
 import { DataTableCell } from "../../../Components/StyledComponents";
 import { useAccountNFTsList, useAccountsGetBalances } from "../../../api/hooks/useAccounts";
 import useAccountStore from "../../../store/accountStore";
-import { shortenString } from "../../../utils/helpers";
+import { renderJson, shortenString } from "../../../utils/helpers";
 import type { AccountNftInfo, BalanceEntry } from "@tarilabs/typescript-bindings/wallet-daemon-client";
+import { IoCheckmarkOutline, IoCloseOutline } from "react-icons/io5";
+import NFTList from "../../../Components/NFTList";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -64,15 +66,6 @@ function BalanceRow({ token_symbol, resource_address, resource_type, balance, co
       <DataTableCell>{resource_type}</DataTableCell>
       <DataTableCell>{showBalance ? balance : "*************"}</DataTableCell>
       <DataTableCell>{showBalance ? confidential_balance : "**************"}</DataTableCell>
-    </TableRow>
-  );
-}
-
-function NftsList({ metadata, is_burned }: AccountNftInfo) {
-  return (
-    <TableRow key={metadata}>
-      <DataTableCell>{metadata}</DataTableCell>
-      <DataTableCell>{is_burned}</DataTableCell>
     </TableRow>
   );
 }
@@ -120,7 +113,7 @@ function Assets({ accountName }: { accountName: string }) {
     isError: nftsListIsError,
     error: nftsListError,
     isFetching: nftsListIsFetching,
-  } = useAccountNFTsList(0, 10);
+  } = useAccountNFTsList({ Name: accountName }, 0, 10);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -183,30 +176,12 @@ function Assets({ accountName }: { accountName: string }) {
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {nftsListIsError || nftsListIsFetching ? (
-          <FetchStatusCheck
-            isError={nftsListIsError}
-            errorMessage={nftsListError?.message || "Error fetching data"}
-            isLoading={nftsListIsFetching}
-          />
-        ) : (
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Token Symbol</TableCell>
-                  <TableCell>Resource Type</TableCell>
-                  <TableCell>Is Burned</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {nftsListData?.nfts.map(({ metadata, is_burned }: AccountNftInfo) => {
-                  return <NftsList metadata={metadata} is_burned={is_burned} />;
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+        <NFTList
+          nftsListIsError={nftsListIsError}
+          nftsListIsFetching={nftsListIsFetching}
+          nftsListError={nftsListError}
+          nftsListData={nftsListData}
+        />
       </TabPanel>
     </Box>
   );
