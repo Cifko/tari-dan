@@ -340,6 +340,9 @@ impl WalletStoreWriter for WriteTransaction<'_> {
     ) -> Result<(), WalletStorageError> {
         use crate::schema::substates;
 
+        println!("substates_insert_child: {}", child.substate_id);
+        println!("substates_insert_child: {:?}", child);
+
         diesel::insert_into(substates::table)
             .values((
                 substates::address.eq(child.substate_id.to_string()),
