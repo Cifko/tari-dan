@@ -35,8 +35,8 @@ import { renderJson, shortenString } from "../../utils/helpers";
 import { DataTableCell } from "../../Components/StyledComponents";
 import CopyToClipboard from "../../Components/CopyToClipboard";
 import FetchStatusCheck from "../../Components/FetchStatusCheck";
-import { substateIdToString } from "@tarilabs/typescript-bindings";
-import type { AccountNftInfo, BalanceEntry } from "@tarilabs/typescript-bindings/wallet-daemon-client";
+import { substateIdToString } from "@tariproject/typescript-bindings";
+import type { AccountNftInfo, BalanceEntry } from "@tariproject/typescript-bindings/wallet-daemon-client";
 import { IoCheckmarkOutline, IoCloseOutline } from "react-icons/io5";
 import NFTList from "../../Components/NFTList";
 

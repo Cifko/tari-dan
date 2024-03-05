@@ -1,7 +1,7 @@
 import React from "react";
 import FetchStatusCheck from "./FetchStatusCheck";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import type { AccountNftInfo, ListAccountNftResponse } from "@tarilabs/typescript-bindings/wallet-daemon-client";
+import type { AccountNftInfo, ListAccountNftResponse } from "@tariproject/typescript-bindings/wallet-daemon-client";
 import type { apiError } from "../api/helpers/types";
 import { DataTableCell } from "./StyledComponents";
 import { renderJson } from "../utils/helpers";
