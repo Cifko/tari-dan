@@ -296,122 +296,121 @@ async fn mint_nft() {
     println!("Response {:?}", resp);
 }
 
-async fn test_nft() {
-    let vn_jrpc = VNJrpcClient::new("http://localhost:18018");
-    let templates = vn_jrpc.get_templates().await.unwrap();
-    let template = templates
-        .templates
-        .iter()
-        .find(|template| template.name == "basic_nft.wasm")
-        .unwrap();
-    // println!("{:?}", template);
-    let dan_jrpc = DanJrpcClient::new("http://localhost:18015").await;
-    let accounts = dan_jrpc.accounts_list(0, 10).await.unwrap();
-    let fee_account = accounts.accounts.first().unwrap().account.clone();
-    let instruction = Instruction::CallFunction {
-        template_address: template.address,
-        function: "new_with_initial_nft".to_string(),
-        args: args![NonFungibleId::String("1000".to_string())],
-    };
-    let resp = dan_jrpc
-        .transaction_submit_instruction(
-            vec![instruction],
-            ComponentAddressOrName::ComponentAddress(fee_account.address.as_component_address().unwrap()),
-            vec![SubstateRequirement {
-                substate_id: fee_account.address,
-                version: None,
-            }],
-            vec![],
-            // vec![SubstateRequirement {
-            //     substate_id: account.address,
-            //     version: None,
-            // }],
-        )
-        .await
-        .unwrap();
-    println!("Response {:?}", resp);
-    // let account = accounts.accounts.last().unwrap().account.clone();
+// async fn test_nft() {
+//     let vn_jrpc = VNJrpcClient::new("http://localhost:18018");
+//     let templates = vn_jrpc.get_templates().await.unwrap();
+//     let template = templates
+//         .templates
+//         .iter()
+//         .find(|template| template.name == "basic_nft.wasm")
+//         .unwrap();
+//     // println!("{:?}", template);
+//     let dan_jrpc = DanJrpcClient::new("http://localhost:18015").await;
+//     let accounts = dan_jrpc.accounts_list(0, 10).await.unwrap();
+//     let fee_account = accounts.accounts.first().unwrap().account.clone();
+//     let instruction = Instruction::CallFunction {
+//         template_address: template.address,
+//         function: "new_with_initial_nft".to_string(),
+//         args: args![NonFungibleId::String("1000".to_string())],
+//     };
+//     let resp = dan_jrpc
+//         .transaction_submit_instruction(
+//             vec![instruction],
+//             ComponentAddressOrName::ComponentAddress(fee_account.address.as_component_address().unwrap()),
+//             vec![SubstateRequirement {
+//                 substate_id: fee_account.address,
+//                 version: None,
+//             }],
+//             vec![],
+//             // vec![SubstateRequirement {
+//             //     substate_id: account.address,
+//             //     version: None,
+//             // }],
+//         )
+//         .await
+//         .unwrap();
+//     println!("Response {:?}", resp);
+//     // let account = accounts.accounts.last().unwrap().account.clone();
 
-    // let ADDRESS = "e0aa15851c3158056f7ee180cad58519e78de1d26cc7c134bbf0acd0940bf5a5";
-}
+//     // let ADDRESS = "e0aa15851c3158056f7ee180cad58519e78de1d26cc7c134bbf0acd0940bf5a5";
+// }
 
-async fn test_mint() {
-    let vn_jrpc = VNJrpcClient::new("http://localhost:18018");
-    let templates = vn_jrpc.get_templates().await.unwrap();
-    let template = templates
-        .templates
-        .iter()
-        .find(|template| template.name == "basic_nft.wasm")
-        .unwrap();
-    let dan_jrpc = DanJrpcClient::new("http://localhost:18015").await;
-    let accounts = dan_jrpc.accounts_list(0, 10).await.unwrap();
-    let fee_account = accounts.accounts.first().unwrap().account.clone();
-    let resp = dan_jrpc.substates_list(None, Some(SubstateType::Component)).await;
-    let component = resp
-        .substates
-        .iter()
-        .find(|component| component.template_address == Some(template.address))
-        .unwrap();
-    let resp = dan_jrpc.substates_list(None, Some(SubstateType::Resource)).await;
-    let resource = resp
-        .substates
-        .into_iter()
-        .find(|resource| resource.parent_id == Some(component.substate_id.clone()))
-        .unwrap();
-    let resp = dan_jrpc.substates_list(None, Some(SubstateType::Vault)).await;
-    let vault = resp
-        .substates
-        .into_iter()
-        .find(|vault| vault.parent_id == Some(component.substate_id.clone()))
-        .unwrap();
-    let instructions = vec![
-        Instruction::CallMethod {
-            component_address: component.substate_id.as_component_address().unwrap(),
-            method: "mint".to_string(),
-            args: args!["Cifko".to_string(), "https://cifko.com".to_string()],
-        },
-        Instruction::PutLastInstructionOutputOnWorkspace {
-            key: b"out_bucket".to_vec(),
-        },
-        Instruction::CallMethod {
-            component_address: fee_account.address.as_component_address().unwrap(),
-            method: "deposit".to_string(),
-            args: args![Variable("out_bucket")],
-        },
-    ];
-    let resp = dan_jrpc
-        .transaction_submit_instruction(
-            instructions,
-            ComponentAddressOrName::ComponentAddress(fee_account.address.as_component_address().unwrap()),
-            vec![
-                SubstateRequirement {
-                    substate_id: fee_account.address,
-                    version: None,
-                },
-                SubstateRequirement {
-                    substate_id: component.substate_id.clone(),
-                    version: None,
-                },
-                SubstateRequirement {
-                    substate_id: vault.substate_id.clone(),
-                    version: None,
-                },
-            ],
-            // vec![],
-            vec![SubstateRequirement {
-                substate_id: resource.substate_id.clone(),
-                version: None,
-            }],
-        )
-        .await
-        .unwrap();
-    println!("Response {:?}", resp);
-}
+// async fn test_mint() {
+//     let vn_jrpc = VNJrpcClient::new("http://localhost:18018");
+//     let templates = vn_jrpc.get_templates().await.unwrap();
+//     let template = templates
+//         .templates
+//         .iter()
+//         .find(|template| template.name == "basic_nft.wasm")
+//         .unwrap();
+//     let dan_jrpc = DanJrpcClient::new("http://localhost:18015").await;
+//     let accounts = dan_jrpc.accounts_list(0, 10).await.unwrap();
+//     let fee_account = accounts.accounts.first().unwrap().account.clone();
+//     let resp = dan_jrpc.substates_list(None, Some(SubstateType::Component)).await;
+//     let component = resp
+//         .substates
+//         .iter()
+//         .find(|component| component.template_address == Some(template.address))
+//         .unwrap();
+//     let resp = dan_jrpc.substates_list(None, Some(SubstateType::Resource)).await;
+//     let resource = resp
+//         .substates
+//         .into_iter()
+//         .find(|resource| resource.parent_id == Some(component.substate_id.clone()))
+//         .unwrap();
+//     let resp = dan_jrpc.substates_list(None, Some(SubstateType::Vault)).await;
+//     let vault = resp
+//         .substates
+//         .into_iter()
+//         .find(|vault| vault.parent_id == Some(component.substate_id.clone()))
+//         .unwrap();
+//     let instructions = vec![
+//         Instruction::CallMethod {
+//             component_address: component.substate_id.as_component_address().unwrap(),
+//             method: "mint".to_string(),
+//             args: args!["Cifko".to_string(), "https://cifko.com".to_string()],
+//         },
+//         Instruction::PutLastInstructionOutputOnWorkspace {
+//             key: b"out_bucket".to_vec(),
+//         },
+//         Instruction::CallMethod {
+//             component_address: fee_account.address.as_component_address().unwrap(),
+//             method: "deposit".to_string(),
+//             args: args![Variable("out_bucket")],
+//         },
+//     ];
+//     let resp = dan_jrpc
+//         .transaction_submit_instruction(
+//             instructions,
+//             ComponentAddressOrName::ComponentAddress(fee_account.address.as_component_address().unwrap()),
+//             vec![
+//                 SubstateRequirement {
+//                     substate_id: fee_account.address,
+//                     version: None,
+//                 },
+//                 SubstateRequirement {
+//                     substate_id: component.substate_id.clone(),
+//                     version: None,
+//                 },
+//                 SubstateRequirement {
+//                     substate_id: vault.substate_id.clone(),
+//                     version: None,
+//                 },
+//             ],
+//             // vec![],
+//             vec![SubstateRequirement {
+//                 substate_id: resource.substate_id.clone(),
+//                 version: None,
+//             }],
+//         )
+//         .await
+//         .unwrap();
+//     println!("Response {:?}", resp);
+// }
 
 #[tokio::main]
 async fn main() {
-    // create_nft_account().await;
+    create_nft_account().await;
+    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
     mint_nft().await;
-    // test_nft().await;
-    // test_mint().await;
 }
