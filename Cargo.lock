@@ -2178,10 +2178,15 @@ version = "0.3.0"
 dependencies = [
  "anyhow",
  "borsh",
+ "json5",
+ "lazy_static",
+ "minotari_node_grpc_client",
+ "minotari_wallet_grpc_client",
  "reqwest",
  "serde",
  "serde_json",
  "tari_common_types",
+ "tari_comms",
  "tari_dan_wallet_sdk",
  "tari_engine_types",
  "tari_template_builtin",
@@ -2191,6 +2196,7 @@ dependencies = [
  "tari_validator_node_client",
  "tari_wallet_daemon_client",
  "tokio",
+ "tonic 0.8.3",
 ]
 
 [[package]]
